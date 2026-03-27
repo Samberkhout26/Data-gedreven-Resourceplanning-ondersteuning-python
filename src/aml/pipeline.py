@@ -34,6 +34,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # ─── Azure ML client ───────────────────────────────────────────────────────────
 
+
 def get_ml_client() -> MLClient:
     return MLClient(
         credential=DefaultAzureCredential(),
@@ -44,6 +45,7 @@ def get_ml_client() -> MLClient:
 
 
 # ─── Environment (Docker image) ────────────────────────────────────────────────
+
 
 def get_or_create_environment(ml_client: MLClient):
     """
@@ -60,6 +62,7 @@ def get_or_create_environment(ml_client: MLClient):
 
 
 # ─── Pipeline componenten ──────────────────────────────────────────────────────
+
 
 def rister_component(env_name: str):
     return command(
@@ -84,7 +87,7 @@ def merge_component(env_name: str):
         environment=env_name,
         inputs={
             "rister_data": Input(type="uri_folder"),
-            "werkexpert_data": Input(type="uri_file"),   # CSV uit Blob Storage
+            "werkexpert_data": Input(type="uri_file"),  # CSV uit Blob Storage
         },
         outputs={"merged": Output(type="uri_folder")},
     )
@@ -104,6 +107,7 @@ def training_component(env_name: str):
 
 
 # ─── Pipeline definitie ────────────────────────────────────────────────────────
+
 
 def build_pipeline(env_name: str):
     rister = rister_component(env_name)
@@ -132,6 +136,7 @@ def build_pipeline(env_name: str):
 
 # ─── Submit ────────────────────────────────────────────────────────────────────
 
+
 def submit():
     ml_client = get_ml_client()
 
@@ -144,7 +149,9 @@ def submit():
     pipeline_job.settings.default_compute = "rister-compute"
 
     print("Pipeline submitten...")
-    job = ml_client.jobs.create_or_update(pipeline_job, experiment_name="rister-lightgbm-v1-plushoeveelheid")
+    job = ml_client.jobs.create_or_update(
+        pipeline_job, experiment_name="rister-lightgbm-v1-plushoeveelheid"
+    )
     print(f"Pipeline gestart: {job.studio_url}")
     return job
 

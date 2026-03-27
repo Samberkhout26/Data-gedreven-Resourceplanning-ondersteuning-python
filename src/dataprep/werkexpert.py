@@ -35,18 +35,73 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 log = logging.getLogger(__name__)
 
 DATABASES = [
-    "HULTER23", "HULTER24", "HULTER25",
-    "KUIJPERS24", "KUIJPERS25", "KUIJPERS26",
-    "MELSE09", "MELSE10", "MELSE11", "MELSE12", "MELSE13", "MELSE14",
-    "MELSE15", "MELSE16", "MELSE17", "MELSE18", "MELSE19", "MELSE20",
-    "MELSE21", "MELSE22", "MELSE23", "MELSE24", "MELSE25", "MELSE26",
-    "POEL14", "POEL15", "POEL16", "POEL17", "POEL18", "POEL19",
-    "POEL20", "POEL21", "POEL22", "POEL23", "POEL24", "POEL25", "POEL26",
-    "WESTRA14", "WESTRA15", "WESTRA16", "WESTRA17", "WESTRA18", "WESTRA19",
-    "WESTRA20", "WESTRA21", "WESTRA22", "WESTRA23", "WESTRA24", "WESTRA25", "WESTRA26",
-    "JENNISSEN20", "JENNISSEN21", "JENNISSEN22", "JENNISSEN23", "JENNISSEN24", "JENNISSEN25", "JENNISSEN26",
-    "DERKS23", "DERKS24", "DERKS25", "DERKS26",
-    "DIEPEN21", "DIEPEN22", "DIEPEN23", "DIEPEN24", "DIEPEN25", "DIEPEN26",
+    "HULTER23",
+    "HULTER24",
+    "HULTER25",
+    "KUIJPERS24",
+    "KUIJPERS25",
+    "KUIJPERS26",
+    "MELSE09",
+    "MELSE10",
+    "MELSE11",
+    "MELSE12",
+    "MELSE13",
+    "MELSE14",
+    "MELSE15",
+    "MELSE16",
+    "MELSE17",
+    "MELSE18",
+    "MELSE19",
+    "MELSE20",
+    "MELSE21",
+    "MELSE22",
+    "MELSE23",
+    "MELSE24",
+    "MELSE25",
+    "MELSE26",
+    "POEL14",
+    "POEL15",
+    "POEL16",
+    "POEL17",
+    "POEL18",
+    "POEL19",
+    "POEL20",
+    "POEL21",
+    "POEL22",
+    "POEL23",
+    "POEL24",
+    "POEL25",
+    "POEL26",
+    "WESTRA14",
+    "WESTRA15",
+    "WESTRA16",
+    "WESTRA17",
+    "WESTRA18",
+    "WESTRA19",
+    "WESTRA20",
+    "WESTRA21",
+    "WESTRA22",
+    "WESTRA23",
+    "WESTRA24",
+    "WESTRA25",
+    "WESTRA26",
+    "JENNISSEN20",
+    "JENNISSEN21",
+    "JENNISSEN22",
+    "JENNISSEN23",
+    "JENNISSEN24",
+    "JENNISSEN25",
+    "JENNISSEN26",
+    "DERKS23",
+    "DERKS24",
+    "DERKS25",
+    "DERKS26",
+    "DIEPEN21",
+    "DIEPEN22",
+    "DIEPEN23",
+    "DIEPEN24",
+    "DIEPEN25",
+    "DIEPEN26",
 ]
 
 
@@ -108,11 +163,15 @@ def run():
     werk = uren[uren["URENVERANTW_TIJDSOORT"].isin(werk_ids)].copy()
     pauze = uren[uren["URENVERANTW_TIJDSOORT"].isin(pauze_ids)].copy()
 
-    werk_agg = werk.groupby(key_cols, as_index=False)["URENVERANTW_AANTAL"].sum().rename(
-        columns={"URENVERANTW_AANTAL": "WERK_TIME"}
+    werk_agg = (
+        werk.groupby(key_cols, as_index=False)["URENVERANTW_AANTAL"]
+        .sum()
+        .rename(columns={"URENVERANTW_AANTAL": "WERK_TIME"})
     )
-    pauze_agg = pauze.groupby(key_cols, as_index=False)["URENVERANTW_AANTAL"].sum().rename(
-        columns={"URENVERANTW_AANTAL": "PAUSE_TIME"}
+    pauze_agg = (
+        pauze.groupby(key_cols, as_index=False)["URENVERANTW_AANTAL"]
+        .sum()
+        .rename(columns={"URENVERANTW_AANTAL": "PAUSE_TIME"})
     )
 
     df = werk_agg.merge(pauze_agg, on=key_cols, how="left")
@@ -145,8 +204,21 @@ def run():
         how="left",
     )
     df = df.merge(
-        orders[["con", "ORD_ID", "ORD_CODE", "ORD_OMS", "ORD_INVDATUM", "ORD_UITVDATUM",
-                "ORD_SOORT", "ORD_TIJD", "PROJ_ID", "RELATIE_ID", "LOC_ID"]],
+        orders[
+            [
+                "con",
+                "ORD_ID",
+                "ORD_CODE",
+                "ORD_OMS",
+                "ORD_INVDATUM",
+                "ORD_UITVDATUM",
+                "ORD_SOORT",
+                "ORD_TIJD",
+                "PROJ_ID",
+                "RELATIE_ID",
+                "LOC_ID",
+            ]
+        ],
         on=["con", "ORD_ID"],
         how="left",
     )
@@ -165,13 +237,17 @@ def run():
         lambda x: x.expanding().mean().shift(1)
     )
     df["med_snelheid_ratio"] = (df["med_gem_tijd"] / df["taak_gem"].replace(0, np.nan)).fillna(1.0)
-    df["med_ervaring_bewerking"] = df.groupby(["con", "URENVERANTW_MEDID", "DIENST_ART_ID"]).cumcount()
+    df["med_ervaring_bewerking"] = df.groupby(
+        ["con", "URENVERANTW_MEDID", "DIENST_ART_ID"]
+    ).cumcount()
 
     # --- Orderregels (hoeveelheden) ---
     log.info("Laden TB_ORDERREGEL + TB_EENHEID")
     ordrg = fetch_combined("TB_ORDERREGEL")
     eenheid = fetch_combined("TB_EENHEID")
-    ordrg = ordrg.merge(eenheid[["con", "EENHEID_ID", "EENHEID_OMS"]], on=["con", "EENHEID_ID"], how="left")
+    ordrg = ordrg.merge(
+        eenheid[["con", "EENHEID_ID", "EENHEID_OMS"]], on=["con", "EENHEID_ID"], how="left"
+    )
 
     ordrg_agg = ordrg.groupby(["con", "ORDER_DA_ID"], as_index=False).agg(
         ORDRG_HOEVEELHEID=("ORDRG_HOEVEELHEID", "sum"),
@@ -221,8 +297,12 @@ def run():
     mask = relatie["lat"].isna()
     if mask.any():
         bag_pc = bag.groupby("postcode")[["lat", "lon"]].mean().reset_index()
-        relatie_unmatched = relatie[mask].drop(columns=["lat", "lon", "postcode", "straat"], errors="ignore")
-        relatie_unmatched = relatie_unmatched.merge(bag_pc, left_on="REL_POSTCODE", right_on="postcode", how="left")
+        relatie_unmatched = relatie[mask].drop(
+            columns=["lat", "lon", "postcode", "straat"], errors="ignore"
+        )
+        relatie_unmatched = relatie_unmatched.merge(
+            bag_pc, left_on="REL_POSTCODE", right_on="postcode", how="left"
+        )
         relatie.loc[mask, ["lat", "lon"]] = relatie_unmatched[["lat", "lon"]].values
 
     relatie = relatie.dropna(subset=["lat", "lon"])
@@ -240,12 +320,15 @@ def run():
         bodem = gpd.read_file(BODEM_GPKG_PATH)
         df_geo = gpd.GeoDataFrame(
             df.dropna(subset=["lat", "lon"]),
-            geometry=gpd.points_from_xy(df.dropna(subset=["lat", "lon"])["lon"],
-                                        df.dropna(subset=["lat", "lon"])["lat"]),
+            geometry=gpd.points_from_xy(
+                df.dropna(subset=["lat", "lon"])["lon"], df.dropna(subset=["lat", "lon"])["lat"]
+            ),
             crs="EPSG:4326",
         )
         bodem = bodem.to_crs("EPSG:4326")
-        df_geo = gpd.sjoin(df_geo, bodem[["Hoofdgrondsoort", "geometry"]], how="left", predicate="within")
+        df_geo = gpd.sjoin(
+            df_geo, bodem[["Hoofdgrondsoort", "geometry"]], how="left", predicate="within"
+        )
         df.loc[df_geo.index, "Hoofdgrondsoort"] = df_geo["Hoofdgrondsoort"].values
     else:
         log.warning(f"Bodemkaart niet gevonden: {BODEM_GPKG_PATH}")
@@ -270,20 +353,26 @@ def run():
     df["med_totaal_opdrachten"] = df.groupby(["con", "URENVERANTW_MEDID"]).cumcount()
     df["med_klant_ratio"] = df["med_klant_bezoeken"] / (df["med_totaal_opdrachten"] + 1)
 
-    df["med_klant_gem_tijd"] = df.groupby(["con", "URENVERANTW_MEDID", "RELATIE_ID"])["REAL_WORKED_TIME"].transform(
-        lambda x: x.expanding().mean().shift(1)
-    )
-    df["med_klant_snelheid"] = (df["med_klant_gem_tijd"] / df["med_gem_tijd"].replace(0, np.nan)).clip(0.1, 5.0)
+    df["med_klant_gem_tijd"] = df.groupby(["con", "URENVERANTW_MEDID", "RELATIE_ID"])[
+        "REAL_WORKED_TIME"
+    ].transform(lambda x: x.expanding().mean().shift(1))
+    df["med_klant_snelheid"] = (
+        df["med_klant_gem_tijd"] / df["med_gem_tijd"].replace(0, np.nan)
+    ).clip(0.1, 5.0)
 
-    df["med_bewerking_gem_tijd"] = df.groupby(["con", "URENVERANTW_MEDID", "DIENST_ART_ID"])["REAL_WORKED_TIME"].transform(
-        lambda x: x.expanding().mean().shift(1)
-    )
-    df["med_bewerking_snelheid"] = (df["med_bewerking_gem_tijd"] / df["med_gem_tijd"].replace(0, np.nan)).clip(0.1, 5.0)
+    df["med_bewerking_gem_tijd"] = df.groupby(["con", "URENVERANTW_MEDID", "DIENST_ART_ID"])[
+        "REAL_WORKED_TIME"
+    ].transform(lambda x: x.expanding().mean().shift(1))
+    df["med_bewerking_snelheid"] = (
+        df["med_bewerking_gem_tijd"] / df["med_gem_tijd"].replace(0, np.nan)
+    ).clip(0.1, 5.0)
 
     # --- Cyclische tijdfeatures ---
     df["dag_van_week"] = pd.to_datetime(df["URENVERANTW_DATUM"]).dt.dayofweek
     df["maand"] = pd.to_datetime(df["URENVERANTW_DATUM"]).dt.month
-    df["URENVERANTW_WEEKNR"] = pd.to_datetime(df["URENVERANTW_DATUM"]).dt.isocalendar().week.astype(int)
+    df["URENVERANTW_WEEKNR"] = (
+        pd.to_datetime(df["URENVERANTW_DATUM"]).dt.isocalendar().week.astype(int)
+    )
     df["week_sin"] = np.sin(2 * np.pi * df["URENVERANTW_WEEKNR"] / 52)
     df["week_cos"] = np.cos(2 * np.pi * df["URENVERANTW_WEEKNR"] / 52)
     df["dag_sin"] = np.sin(2 * np.pi * df["dag_van_week"] / 7)

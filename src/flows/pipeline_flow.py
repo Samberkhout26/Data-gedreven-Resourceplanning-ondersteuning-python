@@ -34,6 +34,7 @@ def stap_rister():
     logger = get_run_logger()
     logger.info("Start Rister dataprep")
     from dataprep.rister import run
+
     run()
     logger.info("Rister dataprep klaar")
 
@@ -50,6 +51,7 @@ def stap_werkexpert():
     logger = get_run_logger()
     logger.info("Start WerkExpert dataprep")
     from dataprep.werkexpert import run
+
     run()
     logger.info("WerkExpert dataprep klaar")
 
@@ -64,6 +66,7 @@ def stap_merge():
     logger = get_run_logger()
     logger.info("Start merge")
     from dataprep.merge import run
+
     run()
     logger.info("Merge klaar")
 
@@ -79,6 +82,7 @@ def stap_training():
     logger = get_run_logger()
     logger.info("Start training")
     from train.train_lightgbm import run
+
     run()
     logger.info("Training klaar")
 

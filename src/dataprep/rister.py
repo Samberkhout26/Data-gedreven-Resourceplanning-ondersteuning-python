@@ -64,7 +64,9 @@ def run():
     bag = pd.read_csv(BAG_COORDS_PATH, low_memory=False)
     addresses["PostalCode"] = addresses["PostalCode"].str.upper().str.replace(" ", "", regex=False)
     bag["postcode"] = bag["postcode"].str.upper().str.replace(" ", "", regex=False)
-    addresses = addresses.merge(bag[["postcode", "lat", "lon"]], left_on="PostalCode", right_on="postcode", how="left")
+    addresses = addresses.merge(
+        bag[["postcode", "lat", "lon"]], left_on="PostalCode", right_on="postcode", how="left"
+    )
 
     # --- Services & ServiceLines ---
     services = get_table(engine, "public", "Services")
@@ -74,7 +76,9 @@ def run():
     equipment = get_table(engine, "public", "Equipment")
     eteg = get_table(engine, "public", "EquipmentToEquipmentGroups")
     eg = get_table(engine, "public", "EquipmentGroups")
-    equipment = equipment.merge(eteg, on="EquipmentId", how="left").merge(eg, on="EquipmentGroupId", how="left", suffixes=("", "_eg"))
+    equipment = equipment.merge(eteg, on="EquipmentId", how="left").merge(
+        eg, on="EquipmentGroupId", how="left", suffixes=("", "_eg")
+    )
 
     # --- PlanningGroups ---
     pg = get_table(engine, "public", "PlanningGroups")
@@ -128,12 +132,16 @@ def run():
     df["med_klant_gem_tijd"] = df.groupby(["EmployeeId", "ClientId"])["hoeveelheid_uur"].transform(
         lambda x: x.expanding().mean().shift(1)
     )
-    df["med_klant_snelheid"] = (df["med_klant_gem_tijd"] / df["med_gem_tijd"].replace(0, np.nan)).clip(0.1, 5.0)
+    df["med_klant_snelheid"] = (
+        df["med_klant_gem_tijd"] / df["med_gem_tijd"].replace(0, np.nan)
+    ).clip(0.1, 5.0)
 
-    df["med_bewerking_gem_tijd"] = df.groupby(["EmployeeId", "ServiceId"])["hoeveelheid_uur"].transform(
-        lambda x: x.expanding().mean().shift(1)
-    )
-    df["med_bewerking_snelheid"] = (df["med_bewerking_gem_tijd"] / df["med_gem_tijd"].replace(0, np.nan)).clip(0.1, 5.0)
+    df["med_bewerking_gem_tijd"] = df.groupby(["EmployeeId", "ServiceId"])[
+        "hoeveelheid_uur"
+    ].transform(lambda x: x.expanding().mean().shift(1))
+    df["med_bewerking_snelheid"] = (
+        df["med_bewerking_gem_tijd"] / df["med_gem_tijd"].replace(0, np.nan)
+    ).clip(0.1, 5.0)
 
     # --- Datum/tijd features (cyclisch) ---
     df["dag_van_week"] = df["StartTime"].dt.dayofweek
@@ -147,9 +155,18 @@ def run():
     df["maand_cos"] = np.cos(2 * np.pi * df["maand"] / 12)
 
     # --- Units pivot ---
-    unit_cols = ["hoeveelheid_uur", "hoeveelheid_baal", "hoeveelheid_big_bag",
-                 "hoeveelheid_dag", "hoeveelheid_hectare", "hoeveelheid_kubieke_meter",
-                 "hoeveelheid_meter", "hoeveelheid_milimeter", "hoeveelheid_stuk", "hoeveelheid_ton"]
+    unit_cols = [
+        "hoeveelheid_uur",
+        "hoeveelheid_baal",
+        "hoeveelheid_big_bag",
+        "hoeveelheid_dag",
+        "hoeveelheid_hectare",
+        "hoeveelheid_kubieke_meter",
+        "hoeveelheid_meter",
+        "hoeveelheid_milimeter",
+        "hoeveelheid_stuk",
+        "hoeveelheid_ton",
+    ]
     for col in unit_cols:
         if col not in df.columns:
             df[col] = 0.0

@@ -27,7 +27,9 @@ def _stap(naam, fn):
 def main():
     parser = argparse.ArgumentParser(description="Rister ML Pipeline")
     parser.add_argument("--skip-rister", action="store_true", help="Sla Rister dataprep over")
-    parser.add_argument("--skip-werkexpert", action="store_true", help="Sla WerkExpert dataprep over")
+    parser.add_argument(
+        "--skip-werkexpert", action="store_true", help="Sla WerkExpert dataprep over"
+    )
     parser.add_argument("--skip-merge", action="store_true", help="Sla merge stap over")
     parser.add_argument("--skip-train", action="store_true", help="Sla training over")
     parser.add_argument("--only-train", action="store_true", help="Alleen training uitvoeren")
@@ -38,18 +40,22 @@ def main():
     if not args.only_train:
         if not args.skip_rister:
             from dataprep.rister import run as run_rister
+
             _stap("Rister dataprep", run_rister)
 
         if not args.skip_werkexpert:
             from dataprep.werkexpert import run as run_werkexpert
+
             _stap("WerkExpert dataprep", run_werkexpert)
 
         if not args.skip_merge:
             from dataprep.merge import run as run_merge
+
             _stap("Merge", run_merge)
 
     if not args.skip_train:
         from train.train_lightgbm import run as run_train
+
         _stap("LightGBM training", run_train)
 
     log.info(f"Pipeline klaar in {time.time() - t_start:.0f}s")

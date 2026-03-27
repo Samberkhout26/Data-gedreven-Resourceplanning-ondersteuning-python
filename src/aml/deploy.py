@@ -41,11 +41,11 @@ def ensure_compute(ml_client: MLClient):
         ml_client.compute.begin_create_or_update(
             AmlCompute(
                 name=COMPUTE_NAME,
-                size="Standard_DS2_v2",        # 2 vCPU, 7 GB RAM — voldoende voor 28k rijen
-                min_instances=0,               # schaalt naar 0 als idle (geen kosten)
+                size="Standard_DS2_v2",  # 2 vCPU, 7 GB RAM — voldoende voor 28k rijen
+                min_instances=0,  # schaalt naar 0 als idle (geen kosten)
                 max_instances=1,
                 idle_time_before_scale_down=60,  # sneller afschalen dan standaard
-                tier="LowPriority",            # spot instance: ~80% goedkoper
+                tier="LowPriority",  # spot instance: ~80% goedkoper
             )
         ).result()
         print("Compute cluster aangemaakt")

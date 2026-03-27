@@ -28,7 +28,7 @@ if __name__ == "__main__":
         name="rister-wekelijks",
         schedules=[
             CronSchedule(
-                cron="0 2 1 1,4,7,10 *",   # elk kwartaal: 1 jan, 1 apr, 1 jul, 1 okt om 02:00
+                cron="0 2 1 1,4,7,10 *",  # elk kwartaal: 1 jan, 1 apr, 1 jul, 1 okt om 02:00
                 timezone="Europe/Amsterdam",
             )
         ],

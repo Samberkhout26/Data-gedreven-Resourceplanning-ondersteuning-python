@@ -73,7 +73,9 @@ def run():
 
     # Rister: selecteer en hernoem kolommen naar doelkolomnamen
     rister_cols_beschikbaar = {k: v for k, v in KOLOM_MAPPING.items() if k in df_rister.columns}
-    df_rister_sel = df_rister[list(rister_cols_beschikbaar.keys()) + [c for c in RISTER_ONLY if c in df_rister.columns]]
+    df_rister_sel = df_rister[
+        list(rister_cols_beschikbaar.keys()) + [c for c in RISTER_ONLY if c in df_rister.columns]
+    ]
     df_rister_sel = df_rister_sel.rename(columns=rister_cols_beschikbaar)
     df_rister_sel["bron"] = "rister"
 
@@ -94,11 +96,15 @@ def run():
     df["norm_klant"] = df.groupby("con")["med_klant_bezoeken"].transform(
         lambda x: x / x.max() if x.max() > 0 else 0
     )
-    df["suitability_score"] = (0.6 * df["norm_ervaring"] + 0.4 * df["norm_klant"]).clip(0, 1).astype("float32")
+    df["suitability_score"] = (
+        (0.6 * df["norm_ervaring"] + 0.4 * df["norm_klant"]).clip(0, 1).astype("float32")
+    )
     df = df.drop(columns=["norm_ervaring", "norm_klant"])
 
-    log.info(f"Suitability score — gemiddelde: {df['suitability_score'].mean():.3f}, "
-             f"mediaan: {df['suitability_score'].median():.3f}")
+    log.info(
+        f"Suitability score — gemiddelde: {df['suitability_score'].mean():.3f}, "
+        f"mediaan: {df['suitability_score'].median():.3f}"
+    )
 
     # Opslaan
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)

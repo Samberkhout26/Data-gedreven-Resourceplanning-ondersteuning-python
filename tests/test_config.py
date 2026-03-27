@@ -21,6 +21,7 @@ def test_data_dir_override(monkeypatch, tmp_path):
     import importlib
 
     import config
+
     importlib.reload(config)
     assert config.DATA_DIR == tmp_path
     assert config.PROCESSED_DIR == tmp_path / "processed"
@@ -31,6 +32,7 @@ def test_data_dir_default():
     import importlib
 
     import config
+
     importlib.reload(config)
     assert config.DATA_DIR.name == "data"
     assert config.PROCESSED_DIR == config.DATA_DIR / "processed"
@@ -42,6 +44,7 @@ def test_models_dir_override(monkeypatch, tmp_path):
     import importlib
 
     import config
+
     importlib.reload(config)
     assert config.MODELS_DIR == tmp_path / "mymodels"
     assert config.MODELS_ONNX_DIR == tmp_path / "mymodels" / "onnx"
@@ -54,6 +57,7 @@ def test_mlflow_uri_fallback_chain(monkeypatch):
     import importlib
 
     import config
+
     importlib.reload(config)
     assert config.MLFLOW_URI == "http://custom:5001"
 
@@ -64,6 +68,7 @@ def test_mlflow_tracking_uri_prioriteit(monkeypatch):
     import importlib
 
     import config
+
     importlib.reload(config)
     assert config.MLFLOW_URI == "http://azureml/tracking"
 
@@ -73,6 +78,7 @@ def test_aml_defaults():
     import importlib
 
     import config
+
     importlib.reload(config)
     assert config.AML_RESOURCE_GROUP == "rister-ml"
     assert config.AML_WORKSPACE == "rister-aml"
