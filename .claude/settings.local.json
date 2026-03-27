@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \":*)",
+      "Bash(python3 -c \":*)",
+      "Bash(where py:*)",
+      "Bash(where python3:*)",
+      "Bash(where python:*)",
+      "Read(//c/Users/sberkhout/AppData/Local/Programs/**)",
+      "Bash(ls /c/Python*)",
+      "Bash(/c/Users/sberkhout/AppData/Local/Microsoft/WindowsApps/python3.exe -c \":*)",
+      "Read(//c/Users/sberkhout/miniconda3/**)",
+      "Read(//c/Users/sberkhout/anaconda3/**)",
+      "Read(//c/ProgramData/miniconda3/**)",
+      "Bash(conda info:*)",
+      "Bash(/c/Users/sberkhout/AppData/Local/miniconda3/python.exe --version)",
+      "Bash(PYEXE=\"/c/Users/sberkhout/AppData/Local/miniconda3/python.exe\")",
+      "Bash(\"$PYEXE\" -c \":*)",
+      "Bash(~/miniconda3/envs/jupyter/bin/python -c \":*)",
+      "Bash(cmd.exe /c \"where python\")",
+      "Bash(cmd.exe /c \"where python 2>nul || where python3 2>nul\")",
+      "Bash(cmd.exe /c \"C:\\\\Windows\\\\py.exe --version 2>nul || dir C:\\\\Python* /B 2>nul\")",
+      "Bash(cmd.exe /c \"dir \"\"C:\\\\Users\\\\sberkhout\\\\AppData\\\\Local\\\\Programs\\\\Python\"\" /B 2>nul\")",
+      "Bash(cmd.exe /c \"jupyter --version 2>nul\")",
+      "Bash(cmd.exe /c \"conda run python --version 2>nul || conda info --base 2>nul\")",
+      "Bash(NB=\"c:/Users/sberkhout/Data-gedreven Resourceplanning ondersteuning/techniek/python/Data-gedreven-Resourceplanning-ondersteuning-python/notebooks/school/deelvraag3_clean 2.ipynb\")",
+      "Bash(/c/Users/sberkhout/AppData/Local/miniconda3/python.exe -c \":*)",
+      "Bash(/c/Users/sberkhout/AppData/Local/miniconda3/python.exe:*)",
+      "Bash(py -c \":*)",
+      "Bash(netstat -ano)",
+      "Bash(tasklist /FI \"PID eq 23088\")",
+      "Bash(tasklist /FI \"PID eq 16852\")",
+      "Bash(tasklist /FI \"PID eq 9892\")",
+      "Bash(tasklist)",
+      "Bash(kill 637)"
+    ]
+  }
+}

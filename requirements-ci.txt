@@ -1,0 +1,6 @@
+# Minimale dependencies voor CI (geen DB-drivers, geen geodata)
+pandas
+numpy
+scikit-learn
+pytest
+ruff
