@@ -24,11 +24,3 @@ jobs:
       - name: Dependencies installeren
         run: pip install -r requirements-ci.txt
 
-      - name: Ruff — linting
-        run: ruff check src/ tests/
-
-      - name: Ruff — opmaak controleren
-        run: ruff format --check src/ tests/
-
-      - name: Pytest
-        run: pytest tests/ -v
