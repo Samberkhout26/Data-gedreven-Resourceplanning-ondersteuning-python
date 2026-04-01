@@ -191,16 +191,6 @@ cython_debug/
 # Ruff stuff:
 .ruff_cache/
 
-# Data — grote bronbestanden nooit in git
-data/extern/bag_nederland_coords.csv
-data/raw/
-data/processed/
-models/
-
-# Gegenereerde bestanden
-generate_stappenplan.py
-Azure ML Stappenplan*.docx
-
 # PyPI configuration file
 .pypirc
 
