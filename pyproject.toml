@@ -9,6 +9,9 @@ ignore = [
     "F401",   # unused import in __init__ files
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"*.ipynb" = ["E402", "E712"]  # E402: setup before imports, E712: pandas uses == True for filtering
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
